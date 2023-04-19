@@ -1,0 +1,7 @@
+# A linha abaixo determina diretórios que serão ignorados pelo github
+
+package-lock.json
+node_modules
+package-lock.json
+
+.github
