@@ -1,8 +1,13 @@
 const { Sequelize } = require('sequelize')
 
-const sequelize = new Sequelize('dbTabs', 'root', '2285r00t', {
-  host: 'localhost',
-  dialect: 'mysql'
+const sequelize = new Sequelize('bd-projeto-bitbox', 'admin-projeto-bitbox', '#Gfgrupo4', {
+  host: 'srv-projeto-bitbox.database.windows.net',
+  dialect: 'mssql',
+  dialectOptions: {
+    options: {
+      encrypt: true, // Define como verdadeiro se estiver usando conexão segura SSL/TLS
+    },
+  },
 });
 
 console.log('Iniciando aplicação....');
@@ -17,11 +22,5 @@ async function testConnection() {
 }
 
 testConnection();
-
-sequelize.sync().then(() => {
-  console.log('Tabela criada com sucesso.');
-}).catch((error) => {
-  console.log('Erro ao criar tabela:', error);
-});
 
 module.exports = sequelize;

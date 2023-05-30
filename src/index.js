@@ -1,59 +1,78 @@
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("test-tabs").addEventListener("click", function () {
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('test-tabs').addEventListener('click', function () {
+    const userCode = in_usercode.value;
+    const inactivityTime = in_inactvity_time.value * 60000;
 
-    const inactivityTime = in_inactvity_time.value * 60000
-    let lastActiveTime
+    console.log(inactivityTime);
 
-    chrome.tabs.query({}, function (tabs) {
-      setInterval(() => {
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          const activeTab = tabs[0];
-          if (activeTab) {
-            lastActiveTime = Date.now();
+    const blockSites = [
+      'www.youtube.com',
+      'br.pinterest.com',
+      'www.primevideo.com',
+      'www.twitch.tv',
+      'zty.pe'
+    ];
 
-            console.log(`${activeTab.title} estou aberta!!`);
-            console.log(lastActiveTime);
-            console.log("--------------------------------");
+    let lastActiveTime = Date.now();
 
-          } else {
-            const inactiveTime = Date.now() - lastActiveTime;
+    // Função para remover sites contidos na lista blockSites
+    function removeBlockedSites(tabs) {
+      for (let tab of tabs) {
+        const url = new URL(tab.url);
+        const hostname = url.hostname;
 
-           for (let tab of tabs){
-            if (inactiveTime > inactivityTime) {
-              chrome.tabs.remove(tab.id);
-            }
-           }
+        console.log(url);
+        console.log(hostname);
+
+        for (let blockSite of blockSites) {
+          if (hostname.includes(blockSite)) {
+            chrome.tabs.remove(tab.id);
           }
-        });
-      }, 5000);
+        }
+      }
+    }
 
+    // Função para enviar os dados para o servidor
+    function sendTabsData(tabs) {
       const data = {
-        tabs: tabs.map(tab => {
+        tabs: tabs.map((tab) => {
           return {
-            title: tab.title,
+            id_janela: tab.windowId,
+            titulo: tab.title,
             url: tab.url,
-            lastActiveTime: Date.now()
-          }
-        })
+            ultima_vez_aberto: lastActiveTime,
+            codigo_patrimonio: userCode,
+          };
+        }),
       };
 
-      console.log('Lista de dados: ', data)
+      console.log('Lista de dados: ', data);
 
-      fetch('http://localhost:3000/tabs', {
+      fetch('http://localhost:3000/abaNavegadorRoutes/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
-      }).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.error(error);
-      });
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
 
+    chrome.tabs.query({}, function (tabs) {
+      sendTabsData(tabs);
+
+      setTimeout(() => {
+        removeBlockedSites(tabs);
+      }, inactivityTime);
+
+      setInterval(() => {
+        sendTabsData(tabs);
+      }, 10000);
     });
-  })
-})
-
-
-
+  });
+});

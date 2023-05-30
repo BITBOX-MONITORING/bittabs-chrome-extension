@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="define-maxlength.js"></script>
+    <script src="../src/index.js"></script>
+    <title>Bit Tabs</title>
+</head>
+
+<body>
+
+    <img src="assets/logo_tabs.png" alt="">
+    <input type="text" placeholder="código" id="in_usercode">
+
+    <p>Definir tempo máximo de inatividade em minutos</p>
+
+    <div class="monitoring">
+        <input type="number" id="in_inactvity_time" min="1" max="60" maxlength="2">
+
+        <button class="btn" id="test-tabs">
+            <img src="assets/rocket-icon.png" alt="">
+            Monitorar
+        </button>
+    </div>
+
+</body>
+
+</html>
