@@ -19,7 +19,7 @@ const AbasNavegador = sequelize.define(
       allowNull: true,
     },
     url: {
-      type: DataTypes.STRING(150),
+      type: DataTypes.STRING(2000),
       allowNull: true,
     },
     ultima_vez_aberto: {

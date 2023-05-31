@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('test-tabs').addEventListener('click', function () {
     const userCode = in_usercode.value;
-    const inactivityTime = in_inactvity_time.value * 60000;
+    const inactivityTime = in_inactvity_time.value * 1000;
 
     console.log(inactivityTime);
 
@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
       for (let tab of tabs) {
         const url = new URL(tab.url);
         const hostname = url.hostname;
-
-        console.log(url);
-        console.log(hostname);
 
         for (let blockSite of blockSites) {
           if (hostname.includes(blockSite)) {
